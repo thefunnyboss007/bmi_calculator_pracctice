@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:bmm_app_torun/icon_content.dart';
+import 'package:bmm_app_torun/reusable_card.dart';
 
 const bottomContainerHeight = 80.0;
-const activeCardColor = Color(0xFF1DE33);
+const activeCardColor = Color(0xFF1D1E33);
+//const inactiveCardColor = Color(0xFF111328);
+const inactiveCardColor = Colors.yellow;
 const bottomContainerColor = Color(0xFFEB1555);
 
 class InputPage extends StatefulWidget {
@@ -11,6 +15,31 @@ class InputPage extends StatefulWidget {
 }
 
 class _InputPageState extends State<InputPage> {
+  Color maleCardColor = inactiveCardColor;
+  Color femaleCadColor = inactiveCardColor;
+
+  void updateColor(int gender) {
+    if (gender == 1) {
+      if (maleCardColor == inactiveCardColor) {
+        maleCardColor = activeCardColor;
+        femaleCadColor = inactiveCardColor;
+      } else {
+        maleCardColor = inactiveCardColor;
+        femaleCadColor = activeCardColor;
+      }
+    }
+
+    if (gender == 2) {
+      if (femaleCadColor == inactiveCardColor) {
+        femaleCadColor = activeCardColor;
+        maleCardColor = inactiveCardColor;
+      } else {
+        femaleCadColor = inactiveCardColor;
+        maleCardColor = activeCardColor;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,15 +52,37 @@ class _InputPageState extends State<InputPage> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: ReusableCard(
-                    colour: activeCardColor,
-                    cardChild: IconContent(),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        updateColor(1);
+                        print('male card selected');
+                      });
+                    },
+                    child: ReusableCard(
+                      colour: maleCardColor,
+                      cardChild: IconContent(
+                        icon: FontAwesomeIcons.mars,
+                        label: 'MALE',
+                      ),
+                    ),
                   ),
                 ),
                 Expanded(
-                  child: ReusableCard(
-                    colour: activeCardColor,
-                    cardChild: IconContent(),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        updateColor(2);
+                        print('female card selected');
+                      });
+                    },
+                    child: ReusableCard(
+                      colour: femaleCadColor,
+                      cardChild: IconContent(
+                        icon: FontAwesomeIcons.venus,
+                        label: 'FEMALE',
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -66,55 +117,6 @@ class _InputPageState extends State<InputPage> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class IconContent extends StatelessWidget {
-  const IconContent({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Icon(
-          FontAwesomeIcons.mars,
-          size: 80.0,
-        ),
-        SizedBox(
-          height: 15.0,
-        ),
-        Text(
-          'MALE',
-          style: TextStyle(
-            fontSize: 18.0,
-            color: Color(0xFF8D8E98),
-          ),
-        )
-      ],
-    );
-  }
-}
-
-class ReusableCard extends StatelessWidget {
-  final Color colour;
-  final Widget cardChild;
-
-  ReusableCard({@required this.colour, this.cardChild});
-
-  //0xFF1DE33
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(15.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        color: colour,
-      ),
-      child: cardChild,
     );
   }
 }
